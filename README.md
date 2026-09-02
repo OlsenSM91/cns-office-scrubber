@@ -1,5 +1,16 @@
 # Office Scrubber
 
+## Analyzer diagnostics
+
+The analyzer diagnostics library provides coordinated human-readable and JSONL
+event logs. Pass `--log <directory>` to create a timestamp-matched `.log` and
+`.jsonl` pair in that directory. Every JSONL line is a complete structured event;
+the matching text file remains convenient to read during troubleshooting.
+
+Pass `--json` when invoking an analyzer host to reserve standard output for its
+single machine-readable result. In that mode, progress and diagnostics belong in
+the log files or on standard error, so scripts can parse standard output safely.
+
 * An automated script to uninstall, remove and scrub Microsoft Office (MSI or Click-to-Run)
 
 * It mostly execute OffScrub vbs scripts, obtained from SaRA tool (Microsoft Support and Recovery Assistant)
