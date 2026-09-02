@@ -10,6 +10,6 @@
     <PackageReference Include="xunit.runner.visualstudio" Version="3.1.5" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\OfficeScrubber.Cli\OfficeScrubber.Cli.csproj" />
+    <ProjectReference Include="..\..\src\OfficeScrubber.Core\OfficeScrubber.Core.csproj" />
   </ItemGroup>
 </Project>
