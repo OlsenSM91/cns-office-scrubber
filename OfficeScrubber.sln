@@ -14,6 +14,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OfficeScrubber.Core.Tests",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OfficeScrubber.Windows.Tests", "tests\OfficeScrubber.Windows.Tests\OfficeScrubber.Windows.Tests.csproj", "{3AE1A708-423C-4255-8E1E-413D3B922E3E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OfficeScrubber.Cli.Tests", "tests\OfficeScrubber.Cli.Tests\OfficeScrubber.Cli.Tests.csproj", "{1A952A5E-BFD2-4BB9-B176-D30461970BAD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -44,5 +46,9 @@ Global
 		{3AE1A708-423C-4255-8E1E-413D3B922E3E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3AE1A708-423C-4255-8E1E-413D3B922E3E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3AE1A708-423C-4255-8E1E-413D3B922E3E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1A952A5E-BFD2-4BB9-B176-D30461970BAD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A952A5E-BFD2-4BB9-B176-D30461970BAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A952A5E-BFD2-4BB9-B176-D30461970BAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A952A5E-BFD2-4BB9-B176-D30461970BAD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

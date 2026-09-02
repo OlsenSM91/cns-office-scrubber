@@ -8,7 +8,8 @@ public sealed class DetectionRunnerTests
     public async Task RunAsync_CollectsDetectorFindings()
     {
         var finding = new DetectionFinding(DetectionSource.Registry, "Microsoft Office");
-        var report = await new DetectionRunner([new StubDetector(finding)]).RunAsync();
+        var report = await new DetectionRunner([new StubDetector(finding)])
+            .RunAsync(TestContext.Current.CancellationToken);
 
         Assert.Equal([finding], report.Findings);
         Assert.True(report.CompletedAt >= report.StartedAt);

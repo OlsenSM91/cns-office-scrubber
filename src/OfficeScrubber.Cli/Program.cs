@@ -1,25 +1,66 @@
-using OfficeScrubber.Core.Detection;
-using OfficeScrubber.Core.Diagnostics;
-using OfficeScrubber.Diagnostics;
-using OfficeScrubber.Windows.Detection;
+using System.Reflection;
+using OfficeScrubber.Cli;
 
-if (!OperatingSystem.IsWindows())
+var parsed = CommandLineParser.Parse(args);
+if (!parsed.IsSuccess)
 {
-    Console.Error.WriteLine("Office Scrubber detection requires Windows.");
-    return 1;
+    Console.Error.WriteLine($"Error: {parsed.Error}");
+    return ExitCodes.UsageError;
 }
 
-var log = new TextDiagnosticLog(Console.Out);
-await log.WriteAsync(new DiagnosticEntry(DateTimeOffset.UtcNow, DiagnosticLevel.Information, "DetectionStarted",
-    "Starting read-only Office detection."));
-
-var report = await new DetectionRunner(WindowsDetectors.CreateDefault()).RunAsync();
-foreach (var finding in report.Findings)
+var options = parsed.Value!;
+if (options.Command == CommandKind.Help)
 {
-    await log.WriteAsync(new DiagnosticEntry(DateTimeOffset.UtcNow, DiagnosticLevel.Information, "Finding",
-        $"{finding.Source}: {finding.Name}"));
+    Console.WriteLine("""
+        Usage: office-scrubber analyze [options]
+               office-scrubber --help
+               office-scrubber --version
+
+        Commands:
+          analyze          Report the current privilege state (read-only)
+
+        Options:
+          --verbose        Include additional operational detail
+          --debug          Include diagnostic detail
+          --json           Emit machine-readable JSON
+          --log <directory> Configure a log directory (no log is written by analyze)
+          --help, -h       Show this help
+          --version        Show the version
+        """);
+    return ExitCodes.Success;
 }
 
-await log.WriteAsync(new DiagnosticEntry(DateTimeOffset.UtcNow, DiagnosticLevel.Information, "DetectionCompleted",
-    $"Detection completed with {report.Findings.Count} finding(s)."));
-return 0;
+if (options.Command == CommandKind.Version)
+{
+    var version = Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "unknown";
+    Console.WriteLine(version);
+    return ExitCodes.Success;
+}
+
+using var cancellation = new CancellationTokenSource();
+ConsoleCancelEventHandler cancelHandler = (_, eventArgs) =>
+{
+    eventArgs.Cancel = true;
+    cancellation.Cancel();
+};
+Console.CancelKeyPress += cancelHandler;
+
+try
+{
+    var command = new AnalyzeCommand(new CurrentProcessPrivilegeStateProvider(), Console.Out);
+    return await command.ExecuteAsync(options, cancellation.Token);
+}
+catch (OperationCanceledException) when (cancellation.IsCancellationRequested)
+{
+    Console.Error.WriteLine("Analysis cancelled.");
+    return ExitCodes.Cancelled;
+}
+catch (Exception exception)
+{
+    Console.Error.WriteLine(options.Debug ? exception.ToString() : $"Analysis failed: {exception.Message}");
+    return ExitCodes.Failure;
+}
+finally
+{
+    Console.CancelKeyPress -= cancelHandler;
+}
